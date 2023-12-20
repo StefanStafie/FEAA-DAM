@@ -1,13 +1,12 @@
 package com.project.InternshipsManager.tests;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.junit.jupiter.api.BeforeEach;
+
+import java.sql.Date;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,35 +14,47 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.InternshipsManager.controller.InternshipsController;
 import com.project.InternshipsManager.dto.InternshipDTO;
+import com.project.InternshipsManager.model.utils.DepartamentEnum;
+import com.project.InternshipsManager.model.utils.StateEnum;
+import com.project.InternshipsManager.repository.EmployeeRepository;
+import com.project.InternshipsManager.repository.InternshipsRepository;
 import com.project.InternshipsManager.service.InternshipService;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
-public class InternshipsManagerTests {
+public class TestInternshipsManagerMock {
 	
-	@InjectMocks
+	@Autowired
 	private InternshipsController internshipsController;
+	
+	@Autowired
+	private InternshipsRepository internshipsRepository;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
 	
 	private MockMvc mockMvc;
 	
-	@Mock
-	private InternshipService internshipService;
-	
-	@BeforeEach
-	public void setup() {
-		mockMvc = MockMvcBuilders.standaloneSetup(internshipsController).build();
-	}
-	
 	@Test
 	public void testAddInternships() throws Exception {
-		InternshipDTO internshipDTO = new InternshipDTO("java developer", true, 6, "Paula Pascu", 
-									 "AGILEBK1", "2023-11-03", "2024-02-01", "",
-									 "Gheorghe Maria,Popescu Andrei");
+		InternshipService internshipService = new InternshipService(internshipsRepository, employeeRepository);
 		
-		mockMvc.perform(post("http://localhost:8081/api/internships_manager/addInternship")
+		InternshipDTO internshipDTO = new InternshipDTO( "Junior Java Backend developer Internship",true,20, 6, 
+									 					Date.valueOf("2023-11-03"),  
+									 					Date.valueOf("2024-02-01"), 
+									 					StateEnum.IN_PROGRESS, DepartamentEnum.BACKEND_DEVELOPMENT,
+									 					"Popescu Ion");
+		
+		internshipsController.setInternshipService(internshipService);
+		
+		mockMvc = MockMvcBuilders.standaloneSetup(internshipsController).build();
+		
+		
+		mockMvc.perform(post("/api/internships/addInternship")
 					    .content(asJsonString(internshipDTO))
 					    .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk());
+		
 	}
 	
     public static String asJsonString(final Object obj) {

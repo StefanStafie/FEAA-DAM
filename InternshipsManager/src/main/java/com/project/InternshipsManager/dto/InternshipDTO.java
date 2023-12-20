@@ -1,48 +1,47 @@
 package com.project.InternshipsManager.dto;
-
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.InternshipsManager.model.utils.DepartamentEnum;
 import com.project.InternshipsManager.model.utils.StateEnum;
 
 
 public class InternshipDTO {
-	private Integer id;
-	private String positionName;
+	private String name;
 	private boolean payed;
+	private Integer numberOfSeatsAvailable;
 	private Integer numberOfHoursWeekly;
-	private String coordinatorName;
-	private String teamName;
-	private String startDate;
-	private String finishDate;
-	private String remarks;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+	private Date startDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+	private Date finishDate;
 	private StateEnum state;
-	private String internEmployeesName;
-	
+	private DepartamentEnum departament;
+	private String coordinatorName;
+
 	public InternshipDTO() {}
 
-	public InternshipDTO(String positionName, boolean payed, Integer numberOfHoursWeekly, String coordinatorName,
-			String teamName, String startDate, String finishDate, String remarks, String internEmployeesName) {
+	public InternshipDTO(String name, boolean payed, Integer numberOfSeatsAvailable, Integer numberOfHoursWeekly,
+			Date startDate, Date finishDate, StateEnum state, DepartamentEnum departament, String coordinatorName) {
 		super();
-		this.positionName = positionName;
+		this.name = name;
 		this.payed = payed;
+		this.numberOfSeatsAvailable = numberOfSeatsAvailable;
 		this.numberOfHoursWeekly = numberOfHoursWeekly;
-		this.coordinatorName = coordinatorName;
-		this.teamName = teamName;
 		this.startDate = startDate;
 		this.finishDate = finishDate;
-		this.remarks = remarks;
-		this.internEmployeesName = internEmployeesName;
+		this.state = state;
+		this.departament = departament;
+		this.coordinatorName = coordinatorName;
 	}
 
-	public String getPositionName() {
-		return positionName;
+	public String getName() {
+		return name;
 	}
 
-
-	public void setPositionName(String positionName) {
-		this.positionName = positionName;
+	public void setName(String name) {
+		this.name = name;
 	}
-
 
 	public boolean isPayed() {
 		return payed;
@@ -50,6 +49,14 @@ public class InternshipDTO {
 
 	public void setPayed(boolean payed) {
 		this.payed = payed;
+	}
+
+	public Integer getNumberOfSeatsAvailable() {
+		return numberOfSeatsAvailable;
+	}
+
+	public void setNumberOfSeatsAvailable(Integer numberOfSeatsAvailable) {
+		this.numberOfSeatsAvailable = numberOfSeatsAvailable;
 	}
 
 	public Integer getNumberOfHoursWeekly() {
@@ -60,44 +67,20 @@ public class InternshipDTO {
 		this.numberOfHoursWeekly = numberOfHoursWeekly;
 	}
 
-	public String getCoordinatorName() {
-		return coordinatorName;
-	}
-
-	public void setCoordinatorName(String coordinatorName) {
-		this.coordinatorName = coordinatorName;
-	}
-
-	public String getTeamName() {
-		return teamName;
-	}
-
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
-	}
-
 	public Date getStartDate() {
-		return Date.valueOf(this.startDate);
+		return startDate;
 	}
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
 	public Date getFinishDate() {
-		return Date.valueOf(this.finishDate);
+		return finishDate;
 	}
 
-	public void setFinishDate(String finishDate) {
+	public void setFinishDate(Date finishDate) {
 		this.finishDate = finishDate;
-	}
-
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
 	}
 
 	public StateEnum getState() {
@@ -108,20 +91,27 @@ public class InternshipDTO {
 		this.state = state;
 	}
 
-	public String getInternEmployeesName() {
-		return internEmployeesName;
+	public DepartamentEnum getDepartament() {
+		return departament;
 	}
 
-	public void setInternEmployeesName(String internEmployeesName) {
-		this.internEmployeesName = internEmployeesName;
+	public void setDepartament(DepartamentEnum departament) {
+		this.departament = departament;
 	}
 
-	public Integer getId() {
-		return id;
+	public String getCoordinatorName() {
+		return coordinatorName;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setCoordinatorName(String coordinatorName) {
+		this.coordinatorName = coordinatorName;
 	}
 	
+	public String getLastNameOfCoordinator() {
+		return this.coordinatorName.split(" ", 2)[0];
+	}
+	
+	public String getFirstNameOfCoordinator() {
+		return this.coordinatorName.split(" ", 2)[1];
+	}
 }

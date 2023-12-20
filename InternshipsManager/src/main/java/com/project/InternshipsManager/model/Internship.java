@@ -1,19 +1,28 @@
 package com.project.InternshipsManager.model;
 
 import java.sql.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.InternshipsManager.model.utils.DepartamentEnum;
+import com.project.InternshipsManager.model.utils.GeneralUtils;
 import com.project.InternshipsManager.model.utils.StateEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="intership")
+@Table(name="internships")
 public class Internship {
 	@SequenceGenerator(name= "internship_sequence_generator", 
 			   sequenceName="internship_id_sequence", 
@@ -24,20 +33,17 @@ public class Internship {
 	@Column(name="id")
 	private Integer id;
 	
-	@Column(name="nume_pozitie")
-	private String positionName;
+	@Column(name = "nume")
+	private String name;
 	
 	@Column(name = "platit")
 	private boolean payed;
 	
+	@Column(name = "numar_locuri_disponibile")
+	private Integer numberOfSeatsAvailable;
+	
 	@Column(name = "numar_ore_saptamanal")
 	private Integer numberOfHoursWeekly;
-	
-	@Column(name = "id_coordonator")
-	private Integer coordinatorId;
-	
-	@Column(name = "id_echipa")
-	private Integer teamId;
 	
 	@Column(name= "data_inceput")
 	private Date startDate;
@@ -45,32 +51,36 @@ public class Internship {
 	@Column(name = "data_sfarsit")
 	private Date finishDate;
 	
-	@Column(name = "observatii")
-	private String remarks;
-	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "stare")
 	private StateEnum state;
 	
-	@Column(name = "id_angajati_interni")
-	private Integer[] internEmployeesId;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "departament")
+	private DepartamentEnum departament;
+	
+	@OneToMany(mappedBy = "internship", fetch = FetchType.EAGER)
+	@JsonIgnore
+	private List<Task> tasks;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_responsabil_internship")
+	private Employee employee;
 	
 	public Internship() { }
 
-	public Internship(String position_name, boolean payed, Integer numberOfHoursWeekly, Integer coordinatorId,
-			Integer teamId, Date startDate, Date finishDate, String remarks, StateEnum state,
-			Integer[] internEmployeesId) {
+	public Internship(String name, boolean payed, Integer numberOfSeatsAvailable, Integer numberOfHoursWeekly,
+			Date startDate, Date finishDate, StateEnum state, DepartamentEnum departament, Employee employee) {
 		super();
-		this.positionName = position_name;
+		this.name = name;
 		this.payed = payed;
+		this.numberOfSeatsAvailable = numberOfSeatsAvailable;
 		this.numberOfHoursWeekly = numberOfHoursWeekly;
-		this.coordinatorId = coordinatorId;
-		this.teamId = teamId;
 		this.startDate = startDate;
 		this.finishDate = finishDate;
-		this.remarks = remarks;
 		this.state = state;
-		this.internEmployeesId = internEmployeesId;
+		this.departament = departament;
+		this.employee = employee;
 	}
 
 	public Integer getId() {
@@ -81,12 +91,12 @@ public class Internship {
 		this.id = id;
 	}
 
-	public String getPosition_name() {
-		return positionName;
+	public String getName() {
+		return name;
 	}
 
-	public void setPosition_name(String position_name) {
-		this.positionName = position_name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public boolean isPayed() {
@@ -97,12 +107,12 @@ public class Internship {
 		this.payed = payed;
 	}
 
-	public String getPositionName() {
-		return positionName;
+	public Integer getNumberOfSeatsAvailable() {
+		return numberOfSeatsAvailable;
 	}
 
-	public void setPositionName(String positionName) {
-		this.positionName = positionName;
+	public void setNumberOfSeatsAvailable(Integer numberOfSeatsAvailable) {
+		this.numberOfSeatsAvailable = numberOfSeatsAvailable;
 	}
 
 	public Integer getNumberOfHoursWeekly() {
@@ -111,30 +121,6 @@ public class Internship {
 
 	public void setNumberOfHoursWeekly(Integer numberOfHoursWeekly) {
 		this.numberOfHoursWeekly = numberOfHoursWeekly;
-	}
-
-	public Integer[] getInternEmployeesId() {
-		return internEmployeesId;
-	}
-
-	public void setInternEmployeesId(Integer[] internEmployeesId) {
-		this.internEmployeesId = internEmployeesId;
-	}
-
-	public Integer getCoordinatorId() {
-		return coordinatorId;
-	}
-
-	public void setCoordinatorId(Integer coordinatorId) {
-		this.coordinatorId = coordinatorId;
-	}
-
-	public Integer getTeamId() {
-		return teamId;
-	}
-
-	public void setTeamId(Integer teamId) {
-		this.teamId = teamId;
 	}
 
 	public Date getStartDate() {
@@ -153,14 +139,6 @@ public class Internship {
 		this.finishDate = finishDate;
 	}
 
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-
 	public StateEnum getState() {
 		return state;
 	}
@@ -169,4 +147,38 @@ public class Internship {
 		this.state = state;
 	}
 
+	public DepartamentEnum getDepartament() {
+		return departament;
+	}
+
+	public void setDepartament(DepartamentEnum departament) {
+		this.departament = departament;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	@Override
+	public String toString() {
+		String tasksString = GeneralUtils.validateEmptyListOfObject(tasks);
+		String employeeString = GeneralUtils.validateNullObject(employee);
+		return "Internship [id=" + id + ", name=" + name + ", payed=" + payed + ", numberOfSeatsAvailable="
+				+ numberOfSeatsAvailable + ", numberOfHoursWeekly=" + numberOfHoursWeekly + ", startDate=" + startDate
+				+ ", finishDate=" + finishDate + ", state=" + state + ", departament=" + departament + ", tasks="
+				+ tasksString + ", employee=" + employeeString + "]";
+	}
+	
 }

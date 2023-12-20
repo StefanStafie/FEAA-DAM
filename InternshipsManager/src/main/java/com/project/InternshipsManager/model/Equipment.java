@@ -1,15 +1,19 @@
 package com.project.InternshipsManager.model;
 
+import com.project.InternshipsManager.model.utils.GeneralUtils;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="echipamente")
+@Table(name="asignare_echipamente_stagiari")
 public class Equipment {
 	@SequenceGenerator(name= "intern_sequence_generator", 
 			   sequenceName="intern_id_sequence", 
@@ -25,14 +29,25 @@ public class Equipment {
 	
 	@Column(name = "numar_serie")
 	private Integer serialNumber;
-	
-	@Column(name = "id_angajat")
-	private Integer employeeId;
+
 	
 	@Column(name = "tip")
 	private String type;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_stagiar")
+	private InternEmployee internEmployee;
+	
+	
 	public Equipment() { }
+
+	public Equipment(String name, Integer serialNumber, String type, InternEmployee internEmployee) {
+		super();
+		this.name = name;
+		this.serialNumber = serialNumber;
+		this.type = type;
+		this.internEmployee = internEmployee;
+	}
 
 	public Integer getId() {
 		return id;
@@ -58,14 +73,6 @@ public class Equipment {
 		this.serialNumber = serialNumber;
 	}
 
-	public Integer getEmployeeId() {
-		return employeeId;
-	}
-
-	public void setEmployeeId(Integer employeeId) {
-		this.employeeId = employeeId;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -74,4 +81,11 @@ public class Equipment {
 		this.type = type;
 	}
 
+	@Override
+	public String toString() {
+		String internEmployeeString = GeneralUtils.validateNullObject(internEmployee);
+		return "Equipment [id=" + id + ", name=" + name + ", serialNumber=" + serialNumber + ", type=" + type
+				+ ", internEmployee=" + internEmployeeString + "]";
+	}
+	
 }
