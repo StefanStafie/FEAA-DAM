@@ -1,5 +1,7 @@
 package com.project.InternshipsManager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,8 @@ public class EquipmentController {
 		return new ResponseEntity<String> (equipmentRepository.findById(id).get().toString(), HttpStatus.OK);
 	}
 	
-	
-
+	@GetMapping("")
+	public ResponseEntity<List<Equipment>> getEquipments() {
+		return new ResponseEntity<List<Equipment>> (equipmentRepository.findAll(), HttpStatus.OK);
+	}
 }

@@ -11,9 +11,9 @@ public class InternshipDTO {
 	private boolean payed;
 	private Integer numberOfSeatsAvailable;
 	private Integer numberOfHoursWeekly;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date startDate;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date finishDate;
 	private StateEnum state;
 	private DepartamentEnum departament;
@@ -107,11 +107,4 @@ public class InternshipDTO {
 		this.coordinatorName = coordinatorName;
 	}
 	
-	public String getLastNameOfCoordinator() {
-		return this.coordinatorName.split(" ", 2)[0];
-	}
-	
-	public String getFirstNameOfCoordinator() {
-		return this.coordinatorName.split(" ", 2)[1];
-	}
 }

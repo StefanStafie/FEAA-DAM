@@ -1,5 +1,7 @@
 package com.project.InternshipsManager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +47,11 @@ public class InternshipsController {
 	@GetMapping("/{id}")
 	public Internship getInternship(@PathVariable Integer id) {
 		return this.internshipService.getInternship(id);
+	}
+	
+	@GetMapping("")
+	public List<Internship> getInternships() {
+		return this.internshipService.getAllInternships();
 	}
 	
 	@DeleteMapping("/deleteInternship/{id}")

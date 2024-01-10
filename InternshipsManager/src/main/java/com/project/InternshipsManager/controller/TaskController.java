@@ -85,6 +85,11 @@ public class TaskController {
 	   return new ResponseEntity<Task>(taskRepository.findById(id).get(), HttpStatus.OK);
    }
    
+   @GetMapping("")
+   public ResponseEntity<List<Task>> getTask() {
+	   return new ResponseEntity<List<Task>>(taskRepository.findAll(), HttpStatus.OK);
+   }
+   
    @PutMapping
    public ResponseEntity<String> assignTaskToTeam(@RequestParam String teamName, @RequestParam String taskName) {
 	   Task task = taskRepository.findByName(taskName);

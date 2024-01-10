@@ -1,5 +1,7 @@
 package com.project.InternshipsManager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,17 +36,14 @@ public class InternEmployeeController {
 	InternshipsRepository internshipsRepository;
 	
 	@PostMapping("/addIntern")
-	public ResponseEntity<String> addIntern(@RequestBody InternEmployeeDTO internEmployeeDTO, @RequestParam Integer teamId, @RequestParam Integer internshipId ){
-		Team team = teamRepository.findById(teamId).get();
-		Internship internship = internshipsRepository.findById(internshipId).get();
-		if(team != null && internship != null) {
+	public ResponseEntity<String> addIntern(@RequestBody InternEmployeeDTO internEmployeeDTO ){
+		
+		
 			InternEmployee internEmployee = new InternEmployee(internEmployeeDTO.getLastName(), internEmployeeDTO.getFirstName(), 
 															   internEmployeeDTO.getContact(), internEmployeeDTO.getDepartament(), 
-															   internEmployeeDTO.getSpecialization(), internship, team);
+															   internEmployeeDTO.getSpecialization(), null, null);
 			internEmployee = internEmployeeRepository.save(internEmployee);
 			return new ResponseEntity<String>(internEmployee.toString(), HttpStatus.OK);
-		}
-		return new ResponseEntity<String>("Add intern operation is not posible!", HttpStatus.BAD_REQUEST);
 	}
 	
 	@DeleteMapping("/deleteIntern/{id}")
@@ -56,6 +55,32 @@ public class InternEmployeeController {
 	public ResponseEntity<String> getIntern(@PathVariable Integer id) {
 		return new ResponseEntity<String>(internEmployeeRepository.findById(id).get().toString(), HttpStatus.OK);
 	}
+	
+	
+	@GetMapping("")
+	public ResponseEntity<Object> getAllInterns() {
+		List<InternEmployee> x  = internEmployeeRepository.findAll();
+		for(int i = 0; i< x.size(); i++) {
+			x.get(i).setEquipments(null);
+			x.get(i).setReviews(null);
+			x.get(i).setTeam(null);
+		}
+	
+		
+		return new ResponseEntity<Object>(x, HttpStatus.OK);
+	}
+	
+	
+	  @GetMapping("/internsByInternship/{internshipId}")
+	    public ResponseEntity<List<InternEmployee>> getInternsByInternship(@PathVariable Integer internshipId) {
+	        List<InternEmployee> interns = internEmployeeRepository.findByInternship_Id(internshipId);
+
+	        if (interns != null && !interns.isEmpty()) {
+	            return new ResponseEntity<>(interns, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	        }
+	    }
 	
 	@PutMapping("/updateInternData/{id}")
 	public ResponseEntity<String> updateInternData(@RequestBody InternEmployeeDTO internEmployeeDTO, @PathVariable Integer id){

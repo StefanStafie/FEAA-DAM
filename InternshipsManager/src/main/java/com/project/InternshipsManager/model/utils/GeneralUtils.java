@@ -25,8 +25,6 @@ public class GeneralUtils {
 	
 	public static Employee getEmployeeByFullName(InternshipDTO internshipDTO, EmployeeRepository employeeRepository) {
 		List<Employee> employees = employeeRepository.findAll().stream()
-                .filter(employee -> employee.getLastName().equals(internshipDTO.getLastNameOfCoordinator()) &&
-             		               employee.getFirstName().equals(internshipDTO.getFirstNameOfCoordinator()))
                 .collect(Collectors.toList());
 		return employees.get(0);
 	}

@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name="stagiari")
@@ -164,4 +165,11 @@ public class InternEmployee {
 				+ contact + ", departament=" + departament + ", specialization=" + specialization + ", internship="
 				+ internshipAsString + ", equipments=" + equipmentsAsString + ", reviews=" + reviewsAsString + ", team=" + teamAsString + "]";
 	}
+	
+	public String partialtoString() {
+		return "InternEmployee [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", contact="
+				+ contact + ", departament=" + departament + ", specialization=" + specialization  + "]";
+	}
+	
+	
 }

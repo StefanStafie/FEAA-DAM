@@ -30,17 +30,14 @@ public class ReviewController {
 	@Autowired
 	private InternEmployeeRepository internEmployeeRepository;
 	
-	@PostMapping("/addReview/{id}")
-	public ResponseEntity<String> addReview(@RequestBody ReviewDTO reviewDTO, @PathVariable Integer internId){
-		InternEmployee internEmployee = internEmployeeRepository.findById(internId).get();
-		if(internEmployee != null) {
+	@PostMapping("/addReview")
+	public ResponseEntity<String> addReview(@RequestBody ReviewDTO reviewDTO){
+		
 			Review review = new Review(reviewDTO.getCreateDate(), reviewDTO.getPositiveMessage(),reviewDTO.getNegativeMessage(), 
 									   reviewDTO.getMark(), reviewDTO.getComment(),reviewDTO.getCriteria(), 
 									   reviewDTO.getInternEmployee());
 			review = reviewRepository.save(review);
 			return new ResponseEntity<String>(review.toString(), HttpStatus.OK);
-		}
-		return new ResponseEntity<String>("Add review operation failed!", HttpStatus.BAD_REQUEST);
 	}
 	
 	@DeleteMapping("/deleteReview/{id}")
@@ -51,6 +48,21 @@ public class ReviewController {
 	@GetMapping("/{id}")
 	public ResponseEntity<String> getReview(@PathVariable Integer id) {
 		return new ResponseEntity<String>(reviewRepository.findById(id).get().toString(), HttpStatus.OK);
+	}
+	
+	@GetMapping("")
+	public ResponseEntity<List<Review>> getReviews() {
+		var x = reviewRepository.findAll();
+		for(int i = 0; i<x.size(); i++) {
+			if(x.get(i).getInternEmployee() != null) {
+				x.get(i).getInternEmployee().setReviews(null);
+				x.get(i).getInternEmployee().setTeam(null);
+				x.get(i).getInternEmployee().setInternship(null);
+				x.get(i).getInternEmployee().setEquipments(null);
+			}
+		}
+		
+		return new ResponseEntity<List<Review>>(reviewRepository.findAll(), HttpStatus.OK);
 	}
 	
 	@PutMapping("/updateReview/{id}")

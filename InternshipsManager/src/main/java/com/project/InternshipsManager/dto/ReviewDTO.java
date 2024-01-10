@@ -9,7 +9,7 @@ import com.project.InternshipsManager.model.InternEmployee;
 
 public class ReviewDTO {
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date createDate;
 	private String positiveMessage;
 	private String negativeMessage;
