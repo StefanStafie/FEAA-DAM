@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.InternshipsManager.dto.ReviewDTO;
 import com.project.InternshipsManager.model.InternEmployee;
 import com.project.InternshipsManager.model.Review;
+import com.project.InternshipsManager.model.utils.designPattern.MarkEvaluationContext;
+import com.project.InternshipsManager.model.utils.designPattern.MarkEvaluationFacade;
+import com.project.InternshipsManager.model.utils.designPattern.MarkEvaluationModel;
 import com.project.InternshipsManager.repository.InternEmployeeRepository;
 import com.project.InternshipsManager.repository.ReviewRepository;
 
@@ -96,27 +99,31 @@ public class ReviewController {
 		return new ResponseEntity<String>(currentReview.toString(),HttpStatus.OK);
 	}
 	
-	@GetMapping("/internPerformanceByCriteria/{id}")
-	public ResponseEntity<String> getPerformenceFromInternReviews(@PathVariable Integer internId){
-		Map<Double, String[]> performenceByCriteriaMap = new HashMap<>();
+	@GetMapping("/simpleMarkEvaluation/{internId}")
+	public ResponseEntity<String> getSimplePerformenceFromInternReviews(@PathVariable Integer internId){
+		Map<Double, String> performenceByCriteriaMap = new HashMap<>();
 		InternEmployee internEmployee = internEmployeeRepository.findById(internId).get();
 		List<Review> reviews = reviewRepository.findByInternEmployee(internEmployee).get();
-		double performance = reviews.stream().mapToDouble(review -> Double.parseDouble(review.getMark().toString())).average().orElse(0.0);
-		String[] criteria = reviews.stream().map(Review::getCriteria).toArray(String[]::new);
-		performenceByCriteriaMap.put(performance, criteria);
+		
+		MarkEvaluationContext context = new MarkEvaluationContext(reviews);
+		MarkEvaluationFacade facade = new MarkEvaluationFacade();
+		performenceByCriteriaMap = facade.getInternEmployeePerformance(context, MarkEvaluationModel.SIMPLE);
+		
 		return new ResponseEntity<String>(performenceByCriteriaMap.toString(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/levelOfAppreciation/{id}")
-	public ResponseEntity<String> getLevelOfAppreciation(@PathVariable Integer internId) {
+	@GetMapping("/positiveMessageMarkEvaluation/{internId}")
+	public ResponseEntity<String> getPositiveMessagePerformanceFromInternReviews(@PathVariable Integer internId) {
+		Map<Double, String> performenceByCriteriaMap = new HashMap<>();
 		InternEmployee internEmployee = internEmployeeRepository.findById(internId).get();
 		List<Review> reviews = reviewRepository.findByInternEmployee(internEmployee).get();
-		String[] positiveMessages = reviews.stream().map(Review::getPositiveMessage).toArray(String[]::new);
-		String[] negativeMessages = reviews.stream().map(Review::getNegativeMessage).toArray(String[]::new);
-		int levelOfPositiveMessage = (positiveMessages.length * 100)/ (positiveMessages.length + negativeMessages.length);
-		return new ResponseEntity<String>(levelOfPositiveMessage + "%" + "Level of appreciation", HttpStatus.OK);
+		
+		MarkEvaluationContext context = new MarkEvaluationContext(reviews);
+		MarkEvaluationFacade facade = new MarkEvaluationFacade();
+		performenceByCriteriaMap = facade.getInternEmployeePerformance(context, MarkEvaluationModel.POSITIVE_MESSAGE);
+		
+		return new ResponseEntity<String>(performenceByCriteriaMap.toString(), HttpStatus.OK);
 		
 	}
-
 
 }
